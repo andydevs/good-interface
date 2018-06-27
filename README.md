@@ -1,4 +1,4 @@
-# Good Interface
+# good_interface
 
 Provides the Interface class and other utilities which can define method "interfaces" which automatically check method implementation in classes and objects.
 
@@ -7,7 +7,7 @@ Provides the Interface class and other utilities which can define method "interf
 An Interface is a collection of methods that are to be implemented in classes that implement this Interface. The Interface class can define Interfaces from a class skeleton.
 
 ```python
-from good.interface import Interface
+from good_interface import Interface
 
 @Interface
 class MyInterface:
@@ -21,7 +21,7 @@ class MyInterface:
 Since the interface is callable, you can call the new Interface object as a decorator on a class, which provides a check on the given class, ensuring that it implements the defined methods in the given interface.
 
 ```python
-from good.interface import Interface
+from good_interface import Interface
 
 @Interface
 class MyInterface:
@@ -43,7 +43,7 @@ class MyClass:
 Calling the interface on another interface will extends the interface, adding the methods of this current interface to the new interface
 
 ```python
-from good.interface import Interface
+from good_interface import Interface
 
 @Interface
 class MyInterface1:

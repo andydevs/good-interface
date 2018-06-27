@@ -17,7 +17,7 @@ with open('README.md', 'r') as file:
 
 # Create setup function
 setup(name='good-interface',
-      version='1.0.0',
+      version='1.0.1',
       description='Provides the Interface class and other interface utilities.',
       long_description=long_description,
       long_description_content_type='text/markdown',

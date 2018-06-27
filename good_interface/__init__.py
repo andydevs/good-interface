@@ -54,9 +54,7 @@ class ISpec(dict):
 
         :param item: the item to spec (or the spec if is dict)
         """
-        super(ISpec, self).__init__(
-            item if type(item) is dict else ISpec.specdict(item)
-        )
+        super(ISpec, self).__init__(item if type(item) is dict else ISpec.specdict(item))
 
     def implemented(self, other):
         """

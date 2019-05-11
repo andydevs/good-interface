@@ -9,5 +9,5 @@ classes and objects.
 Author:  Anshul Kharbanda
 Created: 6 - 26 - 2018
 """
-from .interface_test import ISpecTest, InterfaceTest
-from .stub_test import StubConstructorTest, StubValidTest
+from .constructor_test import StubConstructorTest
+from .valid_test import StubValidTest

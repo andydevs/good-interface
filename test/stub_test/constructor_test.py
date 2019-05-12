@@ -17,9 +17,10 @@ class StubConstructorTest(unittest.TestCase):
     Test constructor
 
     1 - required (required)
-    2 - varargs (optional, default: False)
-    3 - kwargs (optional, default: False)
-    4 - defimpl (optional, default: None)
+    2 - defaults (optional, default: 0)
+    3 - varargs (optional, default: False)
+    4 - kwargs (optional, default: False)
+    5 - defimpl (optional, default: None)
     """
     def test_required(self):
         """
@@ -37,6 +38,22 @@ class StubConstructorTest(unittest.TestCase):
         mystub = stub(3)
         self.assertEqual(3, mystub.required)
 
+    def test_defaults(self):
+        """
+        Tests defaults input
+        """
+        # Sets internal variable defaults to 2
+        mystub = stub(required=3, defaults=2)
+        self.assertEqual(2, mystub.defaults)
+
+        # Defaults to 0 if not given
+        mystub = stub(required=3)
+        self.assertEqual(0, mystub.defaults)
+
+        # Is second argument of stub
+        mystub = stub(3, 2)
+        self.assertEqual(2, mystub.defaults)
+
     def test_varargs(self):
         """
         Tests varargs input
@@ -49,8 +66,8 @@ class StubConstructorTest(unittest.TestCase):
         mystub = stub(3)
         self.assertEqual(False, mystub.varargs)
 
-        # Is second argument of stub
-        mystub = stub(3, True)
+        # Is third argument of stub
+        mystub = stub(3, 2, True)
         self.assertEqual(True, mystub.varargs)
 
     def test_kwargs(self):
@@ -65,8 +82,8 @@ class StubConstructorTest(unittest.TestCase):
         mystub = stub(3)
         self.assertEqual(False, mystub.kwargs)
 
-        # Is third argument of stub
-        mystub = stub(3, False, True)
+        # Is fourth argument of stub
+        mystub = stub(3, 2, False, True)
         self.assertEqual(True, mystub.kwargs)
 
     def test_defimpl(self):
@@ -84,6 +101,6 @@ class StubConstructorTest(unittest.TestCase):
         mystub = stub(3)
         self.assertEqual(None, mystub.defimpl)
 
-        # Is fourth argument of stub
-        mystub = stub(3, False, False, myfunc)
+        # Is fifth argument of stub
+        mystub = stub(3, 2, False, False, myfunc)
         self.assertEqual(myfunc, mystub.defimpl)

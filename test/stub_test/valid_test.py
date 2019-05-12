@@ -33,7 +33,11 @@ class StubValidTest(unittest.TestCase):
             stub(required=3),
             stub(required=3, varargs=True),
             stub(required=3, kwargs=True),
-            stub(required=3, varargs=True, kwargs=True)
+            stub(required=3, varargs=True, kwargs=True),
+            stub(required=3, defaults=2),
+            stub(required=3, defaults=2, varargs=True),
+            stub(required=3, defaults=2, kwargs=True),
+            stub(required=3, defaults=2, varargs=True, kwargs=True)
         ]
 
     def test_noargs(self):
@@ -50,6 +54,10 @@ class StubValidTest(unittest.TestCase):
         self.assertFalse(self.stubs[5].valid(func))
         self.assertFalse(self.stubs[6].valid(func))
         self.assertFalse(self.stubs[7].valid(func))
+        self.assertFalse(self.stubs[8].valid(func))
+        self.assertFalse(self.stubs[9].valid(func))
+        self.assertFalse(self.stubs[10].valid(func))
+        self.assertFalse(self.stubs[11].valid(func))
 
     def test_noargs_varargs(self):
         """
@@ -65,6 +73,10 @@ class StubValidTest(unittest.TestCase):
         self.assertFalse(self.stubs[5].valid(func))
         self.assertFalse(self.stubs[6].valid(func))
         self.assertFalse(self.stubs[7].valid(func))
+        self.assertFalse(self.stubs[8].valid(func))
+        self.assertFalse(self.stubs[9].valid(func))
+        self.assertFalse(self.stubs[10].valid(func))
+        self.assertFalse(self.stubs[11].valid(func))
 
     def test_noargs_kwargs(self):
         """
@@ -80,6 +92,10 @@ class StubValidTest(unittest.TestCase):
         self.assertFalse(self.stubs[5].valid(func))
         self.assertFalse(self.stubs[6].valid(func))
         self.assertFalse(self.stubs[7].valid(func))
+        self.assertFalse(self.stubs[8].valid(func))
+        self.assertFalse(self.stubs[9].valid(func))
+        self.assertFalse(self.stubs[10].valid(func))
+        self.assertFalse(self.stubs[11].valid(func))
 
     def test_noargs_varargs_kwargs(self):
         """
@@ -95,6 +111,10 @@ class StubValidTest(unittest.TestCase):
         self.assertFalse(self.stubs[5].valid(func))
         self.assertFalse(self.stubs[6].valid(func))
         self.assertFalse(self.stubs[7].valid(func))
+        self.assertFalse(self.stubs[8].valid(func))
+        self.assertFalse(self.stubs[9].valid(func))
+        self.assertFalse(self.stubs[10].valid(func))
+        self.assertFalse(self.stubs[11].valid(func))
 
     def test_3args(self):
         """
@@ -110,6 +130,10 @@ class StubValidTest(unittest.TestCase):
         self.assertFalse(self.stubs[5].valid(func))
         self.assertFalse(self.stubs[6].valid(func))
         self.assertFalse(self.stubs[7].valid(func))
+        self.assertFalse(self.stubs[8].valid(func))
+        self.assertFalse(self.stubs[9].valid(func))
+        self.assertFalse(self.stubs[10].valid(func))
+        self.assertFalse(self.stubs[11].valid(func))
 
     def test_3args_varargs(self):
         """
@@ -125,6 +149,10 @@ class StubValidTest(unittest.TestCase):
         self.assertTrue(self.stubs[5].valid(func))
         self.assertFalse(self.stubs[6].valid(func))
         self.assertFalse(self.stubs[7].valid(func))
+        self.assertFalse(self.stubs[8].valid(func))
+        self.assertFalse(self.stubs[9].valid(func))
+        self.assertFalse(self.stubs[10].valid(func))
+        self.assertFalse(self.stubs[11].valid(func))
 
     def test_3args_kwargs(self):
         """
@@ -140,6 +168,10 @@ class StubValidTest(unittest.TestCase):
         self.assertFalse(self.stubs[5].valid(func))
         self.assertTrue(self.stubs[6].valid(func))
         self.assertFalse(self.stubs[7].valid(func))
+        self.assertFalse(self.stubs[8].valid(func))
+        self.assertFalse(self.stubs[9].valid(func))
+        self.assertFalse(self.stubs[10].valid(func))
+        self.assertFalse(self.stubs[11].valid(func))
 
     def test_3args_varargs_kwargs(self):
         """
@@ -154,4 +186,84 @@ class StubValidTest(unittest.TestCase):
         self.assertFalse(self.stubs[4].valid(func))
         self.assertFalse(self.stubs[5].valid(func))
         self.assertFalse(self.stubs[6].valid(func))
-        self.assertTrue(self.stubs[7].valid(func))
+        self.assertFalse(self.stubs[7].valid(func))
+        self.assertFalse(self.stubs[8].valid(func))
+        self.assertFalse(self.stubs[9].valid(func))
+        self.assertFalse(self.stubs[10].valid(func))
+        self.assertFalse(self.stubs[11].valid(func))
+
+    def test_3args_2defs(self):
+        """
+        Tests function with 3 arguments and 2 defaults
+        """
+        def func(a,b=2,c=3):
+            pass
+        self.assertFalse(self.stubs[0].valid(func))
+        self.assertFalse(self.stubs[1].valid(func))
+        self.assertFalse(self.stubs[2].valid(func))
+        self.assertFalse(self.stubs[3].valid(func))
+        self.assertFalse(self.stubs[4].valid(func))
+        self.assertFalse(self.stubs[5].valid(func))
+        self.assertFalse(self.stubs[6].valid(func))
+        self.assertFalse(self.stubs[7].valid(func))
+        self.assertTrue(self.stubs[8].valid(func))
+        self.assertFalse(self.stubs[9].valid(func))
+        self.assertFalse(self.stubs[10].valid(func))
+        self.assertFalse(self.stubs[11].valid(func))
+
+    def test_3args_2defs_varargs(self):
+        """
+        Tests function with 3 arguments and 2 defaults and varargs
+        """
+        def func(a, b=2, c=3, *args):
+            pass
+        self.assertFalse(self.stubs[0].valid(func))
+        self.assertFalse(self.stubs[1].valid(func))
+        self.assertFalse(self.stubs[2].valid(func))
+        self.assertFalse(self.stubs[3].valid(func))
+        self.assertFalse(self.stubs[4].valid(func))
+        self.assertFalse(self.stubs[5].valid(func))
+        self.assertFalse(self.stubs[6].valid(func))
+        self.assertFalse(self.stubs[7].valid(func))
+        self.assertFalse(self.stubs[8].valid(func))
+        self.assertTrue(self.stubs[9].valid(func))
+        self.assertFalse(self.stubs[10].valid(func))
+        self.assertFalse(self.stubs[11].valid(func))
+
+    def test_3args_2defs_kwargs(self):
+        """
+        Tests function with 3 arguments and 2 defaults and kwargs
+        """
+        def func(a, b=2, c=3, **kwargs):
+            pass
+        self.assertFalse(self.stubs[0].valid(func))
+        self.assertFalse(self.stubs[1].valid(func))
+        self.assertFalse(self.stubs[2].valid(func))
+        self.assertFalse(self.stubs[3].valid(func))
+        self.assertFalse(self.stubs[4].valid(func))
+        self.assertFalse(self.stubs[5].valid(func))
+        self.assertFalse(self.stubs[6].valid(func))
+        self.assertFalse(self.stubs[7].valid(func))
+        self.assertFalse(self.stubs[8].valid(func))
+        self.assertFalse(self.stubs[9].valid(func))
+        self.assertTrue(self.stubs[10].valid(func))
+        self.assertFalse(self.stubs[11].valid(func))
+
+    def test_3args_2defs_varargs_kwargs(self):
+        """
+        Tests function with 3 arguments and 2 defaults and varargs and kwargs
+        """
+        def func(a, b=2, c=3, *varargs, **kwargs):
+            pass
+        self.assertFalse(self.stubs[0].valid(func))
+        self.assertFalse(self.stubs[1].valid(func))
+        self.assertFalse(self.stubs[2].valid(func))
+        self.assertFalse(self.stubs[3].valid(func))
+        self.assertFalse(self.stubs[4].valid(func))
+        self.assertFalse(self.stubs[5].valid(func))
+        self.assertFalse(self.stubs[6].valid(func))
+        self.assertFalse(self.stubs[7].valid(func))
+        self.assertFalse(self.stubs[8].valid(func))
+        self.assertFalse(self.stubs[9].valid(func))
+        self.assertFalse(self.stubs[10].valid(func))
+        self.assertTrue(self.stubs[11].valid(func))

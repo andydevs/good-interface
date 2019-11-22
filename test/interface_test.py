@@ -1,18 +1,6 @@
-"""
-Good Interface
-
-Provides the Interface class and other utilities
-which can define method "interfaces" which
-automatically check method implementation in
-classes and objects.
-
-Author:  Anshul Kharbanda
-Created: 6 - 26 - 2018
-"""
 import unittest
-from good_interface import ISpec, Interface
-from inspect import getfullargspec
-from copy import deepcopy
+from good_interface import Interface
+
 
 # ------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------
@@ -23,107 +11,55 @@ from copy import deepcopy
 # ------------------------------------------------------------------------------
 
 
-class TestInterface1:
-    """
-    First Interface to test interface methods.
-    Test single method
-    """
-    def method1(self, arg1):
-        """
-        First interface method
-        """
-        pass
-ITestInterface1 = Interface(TestInterface1)
-
-
-class TestInterface2:
-    """
-    Second Interface to test interface methods
-    Adding second method to TestInterface1
-    """
-    def method1(self, arg1):
-        """
-        First interface method
-        """
+@Interface
+class ITestInterface1:
+    def meth1(self):
         pass
 
-    def method2(self, arg1, arg2):
-        """
-        Second class method
-        """
-        pass
-ITestInterface2 = Interface(TestInterface2)
-
-
-class TestInterface3:
-    """
-    Third Interface to test interface methods
-    Removing first method and just having second and third
-    """
-    def method2(self, arg1, arg2):
-        """
-        Second class method
-        """
+    def meth4(self, a, b):
         pass
 
-    def method3(self, *args):
-        """
-        Third interface method
-        Has varargs
-        """
-        pass
-ITestInterface3 = Interface(TestInterface3)
-
-
-class TestInterface4:
-    """
-    Fourth interface to test interface methods
-    Having all three methods
-    """
-    def method1(self, arg1):
-        """
-        First interface method
-        """
+    def meth5(self, a, *b):
         pass
 
-    def method2(self, arg1, arg2):
-        """
-        Second class method
-        """
+    def meth6(self, a, **c):
         pass
 
-    def method3(self, *args):
-        """
-        Third interface method
-        """
+    def meth7(self, a, b, c, *d, **e):
         pass
-ITestInterface4 = Interface(TestInterface4)
+
+
+@Interface
+class ITestInterface2:
+    def meth2(self, *a):
+        pass
+
+
+@Interface
+class ITestInterface3:
+    def meth1(self):
+        pass
+
+    def meth3(self, **c):
+        pass
 
 
 class TestClass:
-    """
-    Test class to test interface methods
-    """
-    # Example param (should not be speccable)
-    param = 2
-
-    def __init__(self):
-        """
-        Initialize method (should not be speccable)
-        """
+    def meth1(self):
         pass
 
-    def method1(self, arg1):
-        """
-        First class method
-        """
+    def meth4(self, a, b):
         pass
 
-    def method2(self, arg1, arg2):
-        """
-        Second class method
-        """
+    def meth5(self, a, *b):
         pass
+
+    def meth6(self, a, **c):
+        pass
+
+    def meth7(self, a, b, c, *d, **e):
+        pass
+
 
 # ------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------
@@ -134,52 +70,6 @@ class TestClass:
 # ------------------------------------------------------------------------------
 
 
-class ISpecTest(unittest.TestCase):
-    """
-    Tests the ISpec class
-
-    Author:  Anshul Kharbanda
-    Created: 10 - 19 - 2017
-    """
-    # Manually generated specdict for TestClass
-    manual_specdict = {
-        'method1': getfullargspec(TestClass.method1),
-        'method2': getfullargspec(TestClass.method2)
-    }
-
-    def test_speccable(self):
-        """
-        Tests the speccable method
-        """
-        self.assertTrue(ISpec.speccable(TestClass.method1))
-        self.assertFalse(ISpec.speccable(TestClass.__init__))
-        self.assertFalse(ISpec.speccable(TestClass.param))
-
-    def test_specdict(self):
-        """
-        Tests the specdict method
-        """
-        # Assert that the manual specdict equals the generated specdict
-        self.assertEqual(self.manual_specdict, ISpec.specdict(TestClass))
-
-    def test_init(self):
-        """
-        Tests initialization
-        """
-        # Assert that spec of a dict equals spec of the
-        # object representing the spec
-        self.assertEqual(ISpec(self.manual_specdict), ISpec(TestClass))
-
-    def test_implemented(self):
-        """
-        Tests implemented method
-        """
-        self.assertTrue(ISpec(TestInterface1).implemented(ISpec(TestClass)))
-        self.assertTrue(ISpec(TestInterface2).implemented(ISpec(TestClass)))
-        self.assertFalse(ISpec(TestInterface3).implemented(ISpec(TestClass)))
-        self.assertFalse(ISpec(TestInterface4).implemented(ISpec(TestClass)))
-
-
 class InterfaceTest(unittest.TestCase):
     """
     Tests the Interface class
@@ -187,32 +77,68 @@ class InterfaceTest(unittest.TestCase):
     Author:  Anshul Kharbanda
     Created: 10 - 19 - 2017
     """
+    def custom_assert_method_stub(self, infc, name, nargs, varargs, kwargs):
+        self.assertIn(name, infc._stubs)
+        self.assertEqual(infc._stubs[name]._nargs, nargs)
+        self.assertIs(infc._stubs[name]._varargs, varargs)
+        self.assertIs(infc._stubs[name]._kwargs, kwargs)
+        self.assertTrue(infc._stubs[name]._method)
+
     def test_initialization(self):
         """
         Tests init method
         """
-        self.assertEqual(ITestInterface1.__name__, 'TestInterface1')
-        self.assertEqual(ITestInterface1.__spec__, ISpec(TestInterface1))
+        # Test interface instance
+        self.assertIsInstance(ITestInterface1, Interface)
+        self.assertEqual(ITestInterface1.__name__, 'ITestInterface1')
+        self.assertIsInstance(ITestInterface2, Interface)
+        self.assertEqual(ITestInterface2.__name__, 'ITestInterface2')
+        self.assertIsInstance(ITestInterface3, Interface)
+        self.assertEqual(ITestInterface3.__name__, 'ITestInterface3')
+
+        # Test methods
+        self.custom_assert_method_stub(ITestInterface1, 'meth1', 0, False, False)
+        self.custom_assert_method_stub(ITestInterface1, 'meth4', 2, False, False)
+        self.custom_assert_method_stub(ITestInterface1, 'meth5', 1, True, False)
+        self.custom_assert_method_stub(ITestInterface1, 'meth6', 1, False, True)
+        self.custom_assert_method_stub(ITestInterface1, 'meth7', 3, True, True)
+        self.custom_assert_method_stub(ITestInterface2, 'meth2', 0, True, False)
+        self.custom_assert_method_stub(ITestInterface3, 'meth1', 0, False, False)
+        self.custom_assert_method_stub(ITestInterface3, 'meth3', 0, False, True)
 
     def test_extended(self):
         """
         Tests extended method
         """
-        new_name = ITestInterface3.__name__
-        new_spec = deepcopy(ITestInterface1.__spec__)
-        new_spec.update(ITestInterface3.__spec__)
-        NewInterface = ITestInterface1.extended(ITestInterface3)
-        self.assertEqual(NewInterface.__name__, new_name)
-        self.assertEqual(NewInterface.__spec__, new_spec)
+        with self.subTest(extending='ITestInterface2'):
+            Extinf = ITestInterface1.extended(ITestInterface2)
+            self.assertIsInstance(Extinf, Interface)
+            self.assertEqual(Extinf.__name__, 'ITestInterface2')
+            self.custom_assert_method_stub(Extinf, 'meth1', 0, False, False)
+            self.custom_assert_method_stub(Extinf, 'meth2', 0, True, False)
+            self.custom_assert_method_stub(Extinf, 'meth4', 2, False, False)
+            self.custom_assert_method_stub(Extinf, 'meth5', 1, True, False)
+            self.custom_assert_method_stub(Extinf, 'meth6', 1, False, True)
+            self.custom_assert_method_stub(Extinf, 'meth7', 3, True, True)
+
+        with self.subTest(extending='ITestInterface3'):
+            Extinf = ITestInterface1.extended(ITestInterface3)
+            self.assertIsInstance(Extinf, Interface)
+            self.assertEqual(Extinf.__name__, 'ITestInterface3')
+            self.custom_assert_method_stub(Extinf, 'meth1', 0, False, False)
+            self.custom_assert_method_stub(Extinf, 'meth3', 0, False, True)
+            self.custom_assert_method_stub(Extinf, 'meth4', 2, False, False)
+            self.custom_assert_method_stub(Extinf, 'meth5', 1, True, False)
+            self.custom_assert_method_stub(Extinf, 'meth6', 1, False, True)
+            self.custom_assert_method_stub(Extinf, 'meth7', 3, True, True)
 
     def test_implemented(self):
         """
         Tests implemented method
         """
         self.assertTrue(ITestInterface1.implemented(TestClass))
-        self.assertTrue(ITestInterface2.implemented(TestClass))
+        self.assertFalse(ITestInterface2.implemented(TestClass))
         self.assertFalse(ITestInterface3.implemented(TestClass))
-        self.assertFalse(ITestInterface4.implemented(TestClass))
 
     def test_call_for_assert_classes(self):
         """
@@ -231,20 +157,39 @@ class InterfaceTest(unittest.TestCase):
         """
         Tests erroring class assertion __call__
         """
-        with self.assertRaises(Exception): ITestInterface3(TestClass)
+        self.assertRaises(Exception, lambda: ITestInterface2(TestClass))
+        self.assertRaises(Exception, lambda: ITestInterface3(TestClass))
 
     def test_call_for_assert_instance_error(self):
         """
         Tests erroring instance assertion __call__
         """
         test_inst = TestClass()
-        with self.assertRaises(Exception): ITestInterface3(test_inst)
+        self.assertRaises(Exception, lambda: ITestInterface2(test_inst))
+        self.assertRaises(Exception, lambda: ITestInterface3(test_inst))
 
     def test_call_for_extend(self):
         """
         Tests extension __call__
         """
-        CallInfc = ITestInterface1(ITestInterface3)
-        ExtdInfc = ITestInterface1.extended(ITestInterface3)
-        self.assertEqual(CallInfc.__spec__, ExtdInfc.__spec__)
-        self.assertEqual(ExtdInfc.__name__, ITestInterface3.__name__)
+        with self.subTest(extending='ITestInterface2'):
+            Extinf = ITestInterface1(ITestInterface2)
+            self.assertIsInstance(Extinf, Interface)
+            self.assertEqual(Extinf.__name__, 'ITestInterface2')
+            self.custom_assert_method_stub(Extinf, 'meth1', 0, False, False)
+            self.custom_assert_method_stub(Extinf, 'meth2', 0, True, False)
+            self.custom_assert_method_stub(Extinf, 'meth4', 2, False, False)
+            self.custom_assert_method_stub(Extinf, 'meth5', 1, True, False)
+            self.custom_assert_method_stub(Extinf, 'meth6', 1, False, True)
+            self.custom_assert_method_stub(Extinf, 'meth7', 3, True, True)
+
+        with self.subTest(extending='ITestInterface3'):
+            Extinf = ITestInterface1(ITestInterface3)
+            self.assertIsInstance(Extinf, Interface)
+            self.assertEqual(Extinf.__name__, 'ITestInterface3')
+            self.custom_assert_method_stub(Extinf, 'meth1', 0, False, False)
+            self.custom_assert_method_stub(Extinf, 'meth3', 0, False, True)
+            self.custom_assert_method_stub(Extinf, 'meth4', 2, False, False)
+            self.custom_assert_method_stub(Extinf, 'meth5', 1, True, False)
+            self.custom_assert_method_stub(Extinf, 'meth6', 1, False, True)
+            self.custom_assert_method_stub(Extinf, 'meth7', 3, True, True)
